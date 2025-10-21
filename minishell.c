@@ -17,26 +17,50 @@ int	main(int argc, char **argv, char **envp)
 	char	**args;
 	char	*path;
 	char	*line;
+	char *pwd;
 
 	(void)argc;
 	(void)argv;
-	line = readline("Prompt > ");
-	prompt_loop(line, envp);
+	pwd = absolut_path();
+	line = readline(pwd);
+	prompt_loop(line, pwd, envp);
+	free(pwd);
 	return (0);
 }
 
-void	prompt_loop(char *line, char **envp)
+void	prompt_loop(char *line, char *pwd, char **envp)
 {
 	while (line != NULL)
 	{
 		if (*line)
 		{
 			add_history(line);
-			exec_cmd(line, envp);
+			if (isbuiltin(line))
+				exec_builtins(line);
+			else
+				exec_cmd(line, envp);
 		}
 		free(line);
-		line = readline("Prompt > ");
+		pwd = absolut_path();
+		line = readline(pwd);
 	}
+}
+
+int isbuiltin(char *line)
+{
+	if (ft_strncmp(line, "pwd", 3) == 0)
+		return(1);
+	else if (ft_strncmp(line, "cd", 2) == 0)
+		return(1);
+	return(0);
+}
+
+void    exec_builtins(char *line)
+{
+    if (ft_strncmp(line, "pwd", 3) == 0)
+		builtin_pwd();
+	else if (ft_strncmp(line, "cd", 2) == 0)
+		builtin_cd(line);
 }
 
 void	exec_cmd(char *cmd, char **envp)
