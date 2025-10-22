@@ -1,48 +1,95 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mjustine <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/23 22:35:20 by mjustine          #+#    #+#             */
-/*   Updated: 2025/09/23 22:35:22 by mjustine         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "minishell.h"
 
-#include <minishell.h>
-
-int	main(int argc, char **argv, char **envp)
+/*void	write_prompt(void)
 {
-	char	**args;
-	char	*path;
-	char	*line;
-	char *pwd;
+	char	cwd[PATH_MAX];
 
-	(void)argc;
-	(void)argv;
-	pwd = absolut_path();
-	line = readline(pwd);
-	prompt_loop(line, pwd, envp);
-	free(pwd);
-	return (0);
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+	{
+		write(1, cwd, strlen(cwd));
+		write(1, " > ", 3);
+	}
+	else
+		write(1, "unknown > ", 10);
+}*/
+
+void write_prompt(void)
+{
+    char *cwd;
+	cwd = absolut_path();
+	
+	printf("%s ", cwd);
+    // if (getcwd(cwd, sizeof(cwd)) != NULL)
+    // {
+    // }
+    // else
+    // {
+    //     printf("unknown > ");
+    // }
 }
 
-void	prompt_loop(char *line, char *pwd, char **envp)
+void	prompt_loop_sub(char *line, char **token)
 {
+	t_cap	*head;
+	t_cmd	*current;
+	t_rdr	*tmp;
+	size_t	i;
+
+	token = split_tokens(line);
+	if (!all_checks(token))
+		return (exit_syntax(token), (void)0);
+	put_env_arg(token);
+	remove_quotes(token);
+	head = parsing(token);
+	printf("There are %d tok in the following command\n", head->tok);
+	current = head->next;
+	while (current)
+	{
+		i = 0;
+		while (current->argv[i])
+			printf("argv = %s\n", current->argv[i++]);
+		printf("path = %s\n", current->cmd_path);
+		tmp = current->redirs;
+		while (tmp)
+		{
+			printf("\tfilename = %s\n", tmp->filename);
+			printf("\ttype = %d\n", tmp->type);
+			tmp = tmp->next;
+		}
+		current = current->next;
+	}
+	free_head_nodes(head);
+	i = 0;
+	while (token[++i]);
+	free_tokens(token, i - 1);
+}
+
+void	prompt_loop(char **envp)
+{
+	char	*line;
+	char	*origin;
+	char	**token;
+	(void)envp;
+
+	write_prompt();
+	line = readline("");
 	while (line != NULL)
 	{
 		if (*line)
 		{
 			add_history(line);
+			token = NULL;
+			origin = line;
+			prompt_loop_sub(line, token);
 			if (isbuiltin(line))
 				exec_builtins(line);
 			else
 				exec_cmd(line, envp);
 		}
-		free(line);
-		pwd = absolut_path();
-		line = readline(pwd);
+		free(origin);
+		origin = NULL;
+		write_prompt();
+		line = readline("");
 	}
 }
 
@@ -91,3 +138,12 @@ void	exec_cmd(char *cmd, char **envp)
 	else
 		perror("fork");
 }
+
+/*int	main(int argc, char **argv, char **envp)
+{
+	(void)argc;
+	(void)argv;
+
+	prompt_loop(envp);
+	return (0);
+}*/	

@@ -77,3 +77,20 @@ char	*find_path(char *cmd, char **envp)
 		return (NULL);
 	return (search_in_paths(cmd, paths));
 }
+
+char *absolut_path(void)
+{
+    char *full_path = getcwd(NULL, 0);
+    char *last_slash = ft_strrchr(full_path, '/');
+    char *folder_name;
+    char *result;
+
+    if (last_slash && *(last_slash + 1))
+        folder_name = last_slash + 1;
+    else
+        folder_name = full_path;
+
+    result = ft_strjoin(folder_name, " > ");
+    free(full_path);
+    return result;
+}

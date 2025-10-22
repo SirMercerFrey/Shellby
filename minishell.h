@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mjustine <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/23 22:37:14 by mjustine          #+#    #+#             */
-/*   Updated: 2025/09/23 22:37:16 by mjustine         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -26,16 +14,68 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-void	builtin_cd(char *new_dir);
-void	builtin_pwd(void);
-int		isbuiltin(char *line);
-char	*absolut_path(void);
-void	prompt_loop(char *line, char *pwd, char **envp);
-char	*check_direct_path(char *cmd);
-void	ft_free_split(char **arr);
-char	*get_path_variable(char **envp);
-char	*search_in_paths(char *cmd, char **paths);
-char	*find_path(char *cmd, char **envp);
+typedef struct	s_rdr
+{
+	int				type; // < = 0; > = 1; << = 2; >> = 3
+	char			*filename;
+	struct s_rdr	*next;
+} t_rdr;
+	
+typedef struct	s_cmd
+{
+	char			**argv;
+	char			*cmd_path;
+	struct s_rdr	*redirs;
+	struct s_cmd	*next;
+} t_cmd;
+
+typedef struct	s_cap
+{
+	int				tok;
+	struct s_cmd	*next;
+} t_cap;
+
+int		check_pipes(char **token);
+int		check_redirections(char **token);
+int		check_quotes(char **token);
+int		all_checks(char **token);
+void	exit_syntax(char **token);
+void	remove_outer_quotes_inplace(char *str);
+void	remove_quotes(char **argv);
+
+size_t	get_len(char *line);
+char	*extract_token(char **line);
+void	free_tokens(char **token, int i);
+char	**split_tokens(char *line);
+
+void	write_prompt(void);
+void	prompt_loop_sub(char *line, char **token);
+void	prompt_loop(char **envp);
+
+t_cmd	*create_node(void);
+t_cap	*create_head(void);
+void	add_arg(char ***argv, char *word);
+void	parsing_loop(char **token, t_cmd *node, int *n);
+t_cap	*parsing(char **token);
+void	free_head_nodes(t_cap *head);
+
+char    *extract_var(char *str);
+char    *write_var(char *str, char *env, size_t i, size_t var_len);
+char    *get_var(char *str, size_t i);
+void    check_var_quotes(char c, int *in_single_quote, int *in_double_quote);
+void    put_env_str(char **str);
+void    put_env_arg(char **argv);
+
+void	print_banner_start(void);
+void	print_banner_end(void);
+
+char *absolut_path(void);
+int isbuiltin(char *line);
+void    exec_builtins(char *line);
 void	exec_cmd(char *cmd, char **envp);
-void	exec_builtins(char *line);
+void builtin_pwd(void);
+void builtin_cd(char *new_dir);
+char	*find_path(char *cmd, char **envp);
+void	ft_free_split(char **tab);
+
 #endif
