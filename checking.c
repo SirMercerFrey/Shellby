@@ -1,8 +1,9 @@
+#include "minishell.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int     ft_strcmp(char *s1, char *s2)
+static int     ft_strcmp(char *s1, char *s2)
 {
 	while (*s1 && (*s1 == *s2))
 	{
@@ -30,7 +31,7 @@ int		check_pipes(char **token)
 	return (1);
 }
 
-int		is_redir(char c)
+static int		is_redir(char c)
 {
 	return (c == '>' || c == '<');
 }
@@ -88,6 +89,32 @@ int		all_checks(char **token)
 	return (1);
 }
 
+static size_t	ft_strlen(char *str)
+{
+	char	*end;
+
+	if (!str)
+		return (0);
+	end = str;
+	while (*end)
+		++end;
+	return (end - str);
+}
+
+void	exit_syntax(char **token)
+{
+	int		i;
+//	char	*red;
+
+//	red = "\033[0;31m";
+//	write(2, red, ft_strlen(red));
+	write(2, "Syntax error.\n", ft_strlen("Syntax error.\n"));
+//	write(2, red, ft_strlen(red));
+	i = 0;
+	while (token[++i]);
+	free_tokens(token, i - 1);
+}
+
 void	remove_outer_quotes_inplace(char *str)
 {
 	int		in_single_quote;
@@ -129,7 +156,7 @@ void	remove_quotes(char **argv)
 	}
 }
 
-char	*ft_strdup(const char *s)
+/*static char	*ft_strdup(const char *s)
 {
 	char	*dup;
 	int		len;
@@ -148,13 +175,12 @@ char	*ft_strdup(const char *s)
 		++i;
 	}
 	return (dup);
-}
+}*/
 
 
-int		main(void)
+/*int		main(void)
 {
-	//const char	*orig[] = {"\"echo\"", "ab\"cd\"'ef'", "Je suis une ''*'\"", "'>'", "\"outfile.txt\"", NULL};
-	const char	*orig[] = {"\"echo\"", "'de'", "\"de\"", "\"l'\"", NULL };
+	const char	*orig[] = {"\"echo\"", "ab\"cd\"'ef'", 'Je suis une ''*'\"", "'>'", "\"outfile.txt\"", NULL};
 	char	*token[10];
 
 	size_t	i = 0;
@@ -169,7 +195,6 @@ int		main(void)
 		printf("%s\n", token[i++]);
 	if (all_checks(token))
 	{
-		printf("Ne s'affiche pas\n");
 		remove_quotes(token);
 		i = 0;
 		while (token[i])
@@ -180,4 +205,4 @@ int		main(void)
 	while (token[i])
 	    free(token[i++]);	
 	return (0);
-}
+}*/
