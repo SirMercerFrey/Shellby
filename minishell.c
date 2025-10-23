@@ -28,19 +28,20 @@ void write_prompt(void)
     // }
 }
 
-void	prompt_loop_sub(char *line, char **token)
+t_cmd	*prompt_loop_sub(char *line)
 {
+	char **tokens;
 	t_cap	*head;
 	t_cmd	*current;
 	t_rdr	*tmp;
 	size_t	i;
 
-	token = split_tokens(line);
-	if (!all_checks(token))
-		return (exit_syntax(token), (void)0);
-	put_env_arg(token);
-	remove_quotes(token);
-	head = parsing(token);
+	tokens = split_tokens(line);
+	if (!all_checks(tokens))
+		return (exit_syntax(tokens), NULL);
+	put_env_arg(tokens);
+	remove_quotes(tokens);
+	head = parsing(tokens);
 	printf("There are %d tok in the following command\n", head->tok);
 	current = head->next;
 	while (current)
@@ -50,6 +51,7 @@ void	prompt_loop_sub(char *line, char **token)
 			printf("argv = %s\n", current->argv[i++]);
 		printf("path = %s\n", current->cmd_path);
 		tmp = current->redirs;
+
 		while (tmp)
 		{
 			printf("\tfilename = %s\n", tmp->filename);
@@ -57,81 +59,85 @@ void	prompt_loop_sub(char *line, char **token)
 			tmp = tmp->next;
 		}
 		current = current->next;
+		printf("LETSGO\n");
 	}
-	free_head_nodes(head);
+    t_cmd *cmds = head->next;
+	// free_head_nodes(head);
 	i = 0;
-	while (token[++i]);
-	free_tokens(token, i - 1);
+	while (tokens[++i])
+		free_tokens(tokens, i - 1);
+
+	return cmds;
 }
 
-void	prompt_loop(char **envp)
+void prompt_loop(char **envp)
 {
-	char	*line;
-	char	*origin;
-	char	**token;
-	(void)envp;
+    char *line;
+    char *prompt;
+    t_cmd *cmds;
 
-	write_prompt();
-	line = readline("");
-	while (line != NULL)
-	{
-		if (*line)
-		{
-			add_history(line);
-			token = NULL;
-			origin = line;
-			prompt_loop_sub(line, token);
-			if (isbuiltin(line))
-				exec_builtins(line);
-			else
-				exec_cmd(line, envp);
-		}
-		free(origin);
-		origin = NULL;
-		write_prompt();
-		line = readline("");
-	}
+    while (1)
+    {
+        prompt = absolut_path();
+        line = readline(prompt);
+        free(prompt);
+
+        if (!line)
+            break;
+
+        if (*line)
+        {
+            add_history(line);
+            cmds = prompt_loop_sub(line);
+            if (cmds)
+            {
+                if (isbuiltin(cmds))
+                    exec_builtins(cmds);
+                else
+                    exec_cmd(cmds, envp);
+                // free_cmd_list(cmds);
+            }
+        }
+        free(line);
+    }
 }
 
-int isbuiltin(char *line)
+int isbuiltin(t_cmd *cmd)
 {
-	if (ft_strncmp(line, "pwd", 3) == 0)
-		return(1);
-	else if (ft_strncmp(line, "cd", 2) == 0)
-		return(1);
-	return(0);
+    if (ft_strcmp(cmd->argv[0], "pwd") == 0)
+        return (1);
+    if (ft_strcmp(cmd->argv[0], "cd") == 0)
+        return (1);
+    return (0);
 }
 
-void    exec_builtins(char *line)
+void    exec_builtins(t_cmd *cmd)
 {
-    if (ft_strncmp(line, "pwd", 3) == 0)
-		builtin_pwd();
-	else if (ft_strncmp(line, "cd", 2) == 0)
-		builtin_cd(line);
+    if (ft_strncmp(cmd->argv[0], "pwd", 3) == 0)
+		builtin_pwd(cmd);
+	else if (ft_strncmp(cmd->argv[0], "cd", 2) == 0)
+		builtin_cd(cmd);
 }
 
-void	exec_cmd(char *cmd, char **envp)
+void	exec_cmd(t_cmd *cmd, char **envp)
 {
-	char	**args;
-	char	*path;
 	pid_t	pid;
 	int		status;
 
+	cmd->cmd_path = find_path(cmd->argv[0], envp);
+	printf("ALLLLO%s\n", cmd->cmd_path);
 	pid = fork();
-	
 	if (pid == 0)
 	{
-		args = ft_split_char(cmd, ' ');
-		path = find_path(args[0], envp);
-		if (!path)
-			printf("Command not found: %s\n", args[0]);
+		if (!cmd->cmd_path)
+			printf("Command not found: %s\n", cmd->argv[0]);
 		else
 		{
-			execve(path, args, envp);
+			execve(cmd->cmd_path, cmd->argv, envp);
 			perror("execve");
 		}
-		ft_free_split(args);
-		free(path);
+		ft_free_split(cmd->argv);
+		free(cmd->cmd_path);
 	}
 	else if (pid > 0)
 		waitpid(pid, &status, 0);

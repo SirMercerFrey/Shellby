@@ -1,18 +1,29 @@
 
 #include<minishell.h>
 
-void builtin_pwd(void)
+void builtin_pwd(t_cmd *cmd)
 {
     char *full_path;
 
-    full_path = getcwd(NULL, 0);
-    printf("%s\n", full_path);
+    if (cmd->argv[1])
+        ft_putstr_fd("pwd: too many args", 2);
+    else
+    {
+        full_path = getcwd(NULL, 0);
+        if (full_path)
+        {
+            printf("%s\n", full_path);
+            free(full_path);
+        }
+        else
+            perror("getcwd");
+    }
 }
 
-void builtin_cd(char *new_dir)
+void builtin_cd(t_cmd *cmd)
 {
-    char **split;
-
-    split = ft_split(new_dir);
-    chdir(split[1]);
+    if (cmd->argv[1])
+        chdir(cmd->argv[1]);
+    else
+        chdir("/home");
 }
