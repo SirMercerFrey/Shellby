@@ -6,7 +6,7 @@ void builtin_pwd(t_cmd *cmd)
     char *full_path;
 
     if (cmd->argv[1])
-        ft_putstr_fd("pwd: too many args", 2);
+        ft_putstr_fd("pwd: too many args\n", 2);
     else
     {
         full_path = getcwd(NULL, 0);

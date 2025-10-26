@@ -28,7 +28,7 @@ void write_prompt(void)
     // }
 }
 
-t_cmd	*prompt_loop_sub(char *line)
+t_cmd	*prompt_loop_sub(char *line, char **envp)
 {
 	char **tokens;
 	t_cap	*head;
@@ -39,7 +39,7 @@ t_cmd	*prompt_loop_sub(char *line)
 	tokens = split_tokens(line);
 	if (!all_checks(tokens))
 		return (exit_syntax(tokens), NULL);
-	put_env_arg(tokens);
+	put_env_arg(tokens, envp);
 	remove_quotes(tokens);
 	head = parsing(tokens);
 	printf("There are %d tok in the following command\n", head->tok);
@@ -59,7 +59,6 @@ t_cmd	*prompt_loop_sub(char *line)
 			tmp = tmp->next;
 		}
 		current = current->next;
-		printf("LETSGO\n");
 	}
     t_cmd *cmds = head->next;
 	// free_head_nodes(head);
@@ -88,7 +87,7 @@ void prompt_loop(char **envp)
         if (*line)
         {
             add_history(line);
-            cmds = prompt_loop_sub(line);
+            cmds = prompt_loop_sub(line, envp);
             if (cmds)
             {
                 if (isbuiltin(cmds))
