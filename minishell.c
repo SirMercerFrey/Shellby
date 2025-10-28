@@ -91,7 +91,7 @@ void prompt_loop(char **envp)
             if (cmds)
             {
                 if (isbuiltin(cmds))
-                    exec_builtins(cmds);
+                    exec_builtins(cmds, &envp);
                 else
                     exec_cmd(cmds, envp);
                 // free_cmd_list(cmds);
@@ -107,15 +107,27 @@ int isbuiltin(t_cmd *cmd)
         return (1);
     if (ft_strcmp(cmd->argv[0], "cd") == 0)
         return (1);
+    if (ft_strcmp(cmd->argv[0], "export") == 0)
+        return (1);
+    if (ft_strcmp(cmd->argv[0], "unset") == 0)
+        return (1);
+    if (ft_strcmp(cmd->argv[0], "env") == 0)
+        return (1);
     return (0);
 }
 
-void    exec_builtins(t_cmd *cmd)
+void    exec_builtins(t_cmd *cmd, char ***envp)
 {
     if (ft_strncmp(cmd->argv[0], "pwd", 3) == 0)
 		builtin_pwd(cmd);
 	else if (ft_strncmp(cmd->argv[0], "cd", 2) == 0)
-		builtin_cd(cmd);
+		builtin_cd(cmd, envp);
+	else if ((ft_strncmp(cmd->argv[0], "export", 6) == 0))
+		builtin_export(cmd, envp);
+	else if ((ft_strncmp(cmd->argv[0], "unset", 5) == 0))
+		builtin_unset(cmd, envp);
+	else if ((ft_strncmp(cmd->argv[0], "env", 3) == 0))
+		builtin_env(envp);
 }
 
 void	exec_cmd(t_cmd *cmd, char **envp)

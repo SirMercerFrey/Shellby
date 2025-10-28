@@ -190,6 +190,57 @@ void	put_env_arg(char **argv, char **envp)
 	}
 }
 
+void ft_setenv(const char *key, const char *value, char ***envp)
+{
+    size_t i = 0;
+    size_t j;
+    size_t key_len = strlen(key);
+    char *new_entry;
+    char **new_env;
+
+    new_entry = malloc(key_len + strlen(value) + 2);
+    if (!new_entry)
+        return;
+    strcpy(new_entry, key);
+    strcat(new_entry, "=");
+    strcat(new_entry, value);
+    printf("NEW ENTRY: %s\n", new_entry);
+    while ((*envp)[i])
+    {
+		// printf("str1: %s, str2: %s\n", (*envp)[i], key);
+        if (!strncmp((*envp)[i], key, key_len) && (*envp)[i][key_len] == '=')
+        {
+		    printf("FREE ZONE: %s\n", (*envp)[i]);
+            // free((*envp)[i]);
+            (*envp)[i] = new_entry;
+            return;
+        }
+        i++;
+    }
+    new_env = malloc(sizeof(char *) * (i + 2));
+
+    if (!new_env)
+    {
+        free(new_entry);
+        return;
+    }
+    j = 0;
+    while (j < i)
+    {
+        new_env[j] = (*envp)[j];
+        j++;
+    }
+
+    new_env[i] = new_entry;
+	printf("str1: %s\n", new_env[i]);
+    new_env[i + 1] = NULL;
+	printf("str2: %s\n", new_env[i + 1]);
+	
+    *envp = new_env;
+    // free(*new_env);
+}
+
+
 /*int		main(void)
 {
 	char	**argv ;

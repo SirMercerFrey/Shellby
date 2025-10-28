@@ -72,12 +72,17 @@ void				print_banner_end(void);
 
 char				*absolut_path(void);
 int					isbuiltin(t_cmd *cmd);
-void				exec_builtins(t_cmd *cmd);
+void    exec_builtins(t_cmd *cmd, char ***envp);
 void				exec_cmd(t_cmd *cmd, char **envp);
 void				builtin_pwd(t_cmd *cmd);
-void				builtin_cd(t_cmd *cmd);
+void    builtin_cd(t_cmd *cmd, char ***envp);
 char				*find_path(char *cmd, char **envp);
 void				ft_free_split(char **tab);
 int					ft_strcmp(char *s1, char *s2);
+char	*ft_getenv(char *var, size_t var_len, char **envp);
+void	ft_setenv(const char *var, const char *value, char ***envp);
+void builtin_export(t_cmd *cmd, char ***envp);
+void builtin_unset(t_cmd *cmd, char ***envp);
+void builtin_env(char ***envp);
 
 #endif
