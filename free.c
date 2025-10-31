@@ -12,17 +12,3 @@
 
 #include <minishell.h>
 
-void	ft_free_split(char **arr)
-{
-	int	i;
-
-	i = 0;
-	if (!arr)
-		return ;
-	while (arr[i])
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
-}

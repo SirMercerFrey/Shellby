@@ -26,12 +26,16 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-void	prompt_loop(char *line, char **envp);
+void	builtin_cd(char *new_dir);
+void	builtin_pwd(void);
+int		isbuiltin(char *line);
+char	*absolut_path(void);
+void	prompt_loop(char *line, char *pwd, char **envp);
 char	*check_direct_path(char *cmd);
 void	ft_free_split(char **arr);
 char	*get_path_variable(char **envp);
 char	*search_in_paths(char *cmd, char **paths);
 char	*find_path(char *cmd, char **envp);
 void	exec_cmd(char *cmd, char **envp);
-
+void	exec_builtins(char *line);
 #endif
