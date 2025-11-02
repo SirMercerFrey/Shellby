@@ -23,8 +23,6 @@ char	*get_prompt(void)
 void	prompt_loop_sub(char *line, t_shell *minishell)
 {
 	t_cap	*head;
-	t_cmd	*current;
-	t_rdr	*tmp;
 	char	**token;
 	size_t	i;
 
@@ -35,8 +33,6 @@ void	prompt_loop_sub(char *line, t_shell *minishell)
 	remove_quotes(token);
 	head = parsing(token);
 	minishell->cap = head;
-	current = head->next;
-//		free_head_nodes(head);
 	i = 0;
 	while (token[++i]);
 	free_tokens(token, i - 1);
@@ -63,6 +59,7 @@ void	prompt_loop(t_shell *minishell)
 					exec_builtins(minishell);
 				else
 					exec_cmd(minishell);
+				free_head_nodes(minishell->cap);
 			}
 			free(origin);
 			origin = NULL;
