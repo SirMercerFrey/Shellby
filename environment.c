@@ -125,7 +125,7 @@ void	put_env_arg(char **argv, char **envp)
 	}
 }
 
-/*void ft_setenv(const char *key, const char *value, char ***envp)
+void ft_setenv(const char *key, const char *value, char ***envp)
 {
     size_t i = 0;
     size_t j;
@@ -173,4 +173,4 @@ void	put_env_arg(char **argv, char **envp)
 	
     *envp = new_env;
     // free(*new_env);
-}*/
+}

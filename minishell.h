@@ -99,6 +99,7 @@ char    *get_var(char *str, size_t i, char **envp);
 void    check_var_quotes(char c, int *in_single_quote, int *in_double_quote);
 void    put_env_str(char **str, char **envp);
 void    put_env_arg(char **argv, char **envp);
+void ft_setenv(const char *key, const char *value, char ***envp);
 
 //print_banner
 void	print_banner_start(void);
@@ -106,5 +107,25 @@ void	print_banner_end(void);
 
 //libft_utils
 int     ft_strcmp(char *s1, char *s2);
+
+//core_bis
+int isbuiltin(t_shell *shell);
+void    exec_builtins(t_shell *shell);
+void    exec_cmd(t_shell *shell);
+void ft_free_split(char **split);
+
+//built-ins
+void builtin_pwd(t_cmd *cmd);
+void builtin_export(t_cmd *cmd, char ***envp);
+void    builtin_cd(t_cmd *cmd, char ***envp);
+void builtin_unset(t_cmd *cmd, char ***envp);
+void builtin_env(char ***envp);
+
+//path_check
+char    *check_direct_path(char *cmd);
+char    *get_path_variable(char **envp);
+char    *search_in_paths(char *cmd, char **paths);
+char    *find_path(char *cmd, char **envp);
+char *absolut_path(void);
 
 #endif

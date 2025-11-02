@@ -12,7 +12,7 @@ void builtin_pwd(t_cmd *cmd)
         full_path = getcwd(NULL, 0);
         if (full_path)
         {
-            printf("%s\n", full_path);
+            ft_printf("%s\n", full_path);
             free(full_path);
         }
         else

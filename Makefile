@@ -18,7 +18,10 @@ SRC =	main.c \
 		parsing_utils.c \
 		quotes.c \
 		environment.c \
-		libft_utils.c
+		libft_utils.c \
+		core_bis.c \
+		built-ins.c \
+		path_check.c
 OBJ = $(SRC:.c=.o)
 
 LIBFT_DIR = libft

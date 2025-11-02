@@ -34,25 +34,9 @@ void	prompt_loop_sub(char *line, t_shell *minishell)
 	put_env_arg(token, minishell->envp);
 	remove_quotes(token);
 	head = parsing(token);
-	printf("There are %d tok in the following command\n", head->tok);
 	minishell->cap = head;
 	current = head->next;
-	while (current)
-	{
-		i = 0;
-		while (current->argv[i])
-			printf("argv = %s\n", current->argv[i++]);
-		printf("path = %s\n", current->cmd_path);
-		tmp = current->redirs;
-		while (tmp)
-		{
-			printf("\tfilename = %s\n", tmp->filename);
-			printf("\ttype = %d\n", tmp->type);
-			tmp = tmp->next;
-		}
-		current = current->next;
-	}
-	free_head_nodes(head);
+//		free_head_nodes(head);
 	i = 0;
 	while (token[++i]);
 	free_tokens(token, i - 1);
@@ -73,6 +57,13 @@ void	prompt_loop(t_shell *minishell)
 			add_history(line);
 			origin = line;
 			prompt_loop_sub(line, minishell);
+			if (minishell->cap)
+			{
+				if (isbuiltin(minishell))
+					exec_builtins(minishell);
+				else
+					exec_cmd(minishell);
+			}
 			free(origin);
 			origin = NULL;
 		}
@@ -83,4 +74,5 @@ void	prompt_loop(t_shell *minishell)
 		line = readline(prompt);
 	}
 	free(prompt);
+	rl_clear_history();
 }
