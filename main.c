@@ -9,6 +9,8 @@ int	main(int argc, char **argv, char **envp)
 	minishell = create_shell(envp);	
 	if (!minishell)
 		return (1);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handle_sigint);
 	print_banner_start();
 	prompt_loop(minishell);
 	free_shell(minishell);

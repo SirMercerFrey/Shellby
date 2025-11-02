@@ -6,6 +6,7 @@
 # include <limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdarg.h>
 # include <stddef.h>
 # include <stdio.h>
@@ -47,6 +48,7 @@ t_shell	*create_shell(char **envp);
 void    free_shell(t_shell *shell);
 char    **copy_envp(char **envp);
 size_t  envp_len(char **envp);
+void	handle_sigint(int signum);
 
 //checking
 int		check_pipes(char **token);

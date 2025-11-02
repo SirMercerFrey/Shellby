@@ -72,3 +72,14 @@ void	free_shell(t_shell *shell)
 	free(shell->envp);
 	free(shell);
 }
+
+void	handle_sigint(int signum)
+{
+	(void)signum;
+
+	ft_printf("\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+	
