@@ -6,6 +6,13 @@ char	*extract_var(char *str)
 	size_t	i;
 	char	*var;
 
+	if (*str == '?')
+	{
+		var = (char *)(malloc(sizeof(char) * 2));
+		var[0] = '?';
+		var[1] = '\0';
+		return (var);
+	}
 	len = 1;
 	while (str[len] && ft_isalnum(str[len]))
 		++len;
@@ -21,10 +28,19 @@ char	*extract_var(char *str)
 	return (var);
 }
 
-char	*ft_getenv(char *var, size_t var_len, char **envp)
+char	*ft_getenv(char *var, size_t var_len, t_shell *shell)
 {
 	size_t	i;
+	char	*status;
+	char	**envp;
 
+	status = NULL;
+	if (!ft_strcmp(var, "?"))
+	{
+		status = ft_itoa(shell->exit_status);
+		return (status);
+	}
+	envp = shell->envp;
 	i = 0;
 	while (envp[i])
 	{
@@ -61,7 +77,7 @@ char	*write_var(char *str, char *env, size_t i, size_t var_len)
 	return (new_str);
 }
 
-char	*get_var(char *str, size_t i, char **envp)
+char	*get_var(char *str, size_t i, t_shell *shell)
 {
 	char	*new_str;
 	char	*var;
@@ -70,11 +86,13 @@ char	*get_var(char *str, size_t i, char **envp)
 
 	var = extract_var(str + i);
 	var_len = ft_strlen(var);
-	env = ft_getenv(var, var_len, envp);
-	free(var);
+	env = ft_getenv(var, var_len, shell);
 	if (!env)
 		env = "";
 	new_str = write_var(str, env, i, var_len);
+	if (*var == '?')
+		free(env);
+	free(var);
 	return (new_str);
 }
 
@@ -86,7 +104,7 @@ void	check_var_quotes(char c, int *in_single_quote, int *in_double_quote)
 		*in_double_quote = !*in_double_quote;
 }
 
-void	put_env_str(char **str, char **envp)
+void	put_env_str(char **str, t_shell *shell)
 {
 	char	*new_str;
 	int		in_single_quote;
@@ -101,7 +119,7 @@ void	put_env_str(char **str, char **envp)
 		check_var_quotes((*str)[i], &in_single_quote, &in_double_quote);
 		if (!in_single_quote && (*str)[i] == '$')
 		{
-			new_str = get_var(*str, i, envp);
+			new_str = get_var(*str, i, shell);
 			free(*str);
 			*str = new_str;
 			i = 0;
@@ -113,14 +131,14 @@ void	put_env_str(char **str, char **envp)
 	}
 }
 
-void	put_env_arg(char **argv, char **envp)
+void	put_env_arg(char **argv, t_shell *shell)
 {
 	size_t	i;
 
 	i = 0;
 	while (argv[i])
 	{
-		put_env_str(&argv[i], envp);
+		put_env_str(&argv[i], shell);
 		++i;
 	}
 }

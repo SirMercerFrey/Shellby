@@ -20,13 +20,13 @@ void builtin_pwd(t_cmd *cmd)
     }
 }
 
-void builtin_export(t_cmd *cmd, char ***envp)
+void builtin_export(t_cmd *cmd, t_shell *shell)
 {
     size_t i = 1;
 
     if (!cmd->argv[1])
     {
-        builtin_env(envp);
+        builtin_env(&shell->envp);
         return;
     }
 
@@ -49,20 +49,20 @@ void builtin_export(t_cmd *cmd, char ***envp)
                 return;
             }
 
-            ft_setenv(key, value, envp);
+            ft_setenv(key, value, &shell->envp);
             free(key);
             free(value);
         }
         else
         {
-            if (!ft_getenv(arg, strlen(arg), *envp))
-                ft_setenv(arg, "", envp);
+            if (!ft_getenv(arg, strlen(arg), shell))
+                ft_setenv(arg, "", &shell->envp);
         }
         i++;
     }
 }
 
-void    builtin_cd(t_cmd *cmd, char ***envp)
+void    builtin_cd(t_cmd *cmd, t_shell *shell)
 {
     char    *cwd;
     char    *oldpwd;
@@ -77,7 +77,7 @@ void    builtin_cd(t_cmd *cmd, char ***envp)
         target = cmd->argv[1];
     }
     else
-        target = ft_getenv("HOME", 4, *envp);
+        target = ft_getenv("HOME", 4, shell);
 
     if (!target)
     {
@@ -97,11 +97,11 @@ void    builtin_cd(t_cmd *cmd, char ***envp)
     printf("OLD: %s\n", oldpwd);
     printf("CWD: %s\n", cwd);
     if (oldpwd)
-        ft_setenv("OLDPWD", oldpwd, envp);
+        ft_setenv("OLDPWD", oldpwd, &shell->envp);
 
     printf("ICI ICI\n");
     if (cwd)
-        ft_setenv("PWD", cwd, envp);
+        ft_setenv("PWD", cwd, &shell->envp);
 
     free(oldpwd);
     free(cwd);

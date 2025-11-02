@@ -22,12 +22,13 @@ void    exec_builtins(t_shell *shell)
 {
 	t_cmd	*tmp;
 
+	tmp = shell->cap->next;
     if (ft_strncmp(tmp->argv[0], "pwd", 3) == 0)
 		builtin_pwd(tmp);
 	else if (ft_strncmp(tmp->argv[0], "cd", 2) == 0)
-		builtin_cd(tmp, &shell->envp);
+		builtin_cd(tmp, shell);
 	else if ((ft_strncmp(tmp->argv[0], "export", 6) == 0))
-		builtin_export(tmp, &shell->envp);
+		builtin_export(tmp, shell);
 	else if ((ft_strncmp(tmp->argv[0], "unset", 5) == 0))
 		builtin_unset(tmp, &shell->envp);
 	else if ((ft_strncmp(tmp->argv[0], "env", 3) == 0))

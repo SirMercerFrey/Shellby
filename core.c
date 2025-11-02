@@ -29,7 +29,7 @@ void	prompt_loop_sub(char *line, t_shell *minishell)
 	token = split_tokens(line);
 	if (!all_checks(token))
 		return (exit_syntax(token), (void)0);
-	put_env_arg(token, minishell->envp);
+	put_env_arg(token, minishell);
 	remove_quotes(token);
 	head = parsing(token);
 	minishell->cap = head;

@@ -93,12 +93,12 @@ void	free_head_nodes(t_cap *head);
 
 //environnement
 char    *extract_var(char *str);
-char	*ft_getenv(char *var, size_t var_len, char **envp);
+char	*ft_getenv(char *var, size_t var_len, t_shell *shell);
 char    *write_var(char *str, char *env, size_t i, size_t var_len);
-char    *get_var(char *str, size_t i, char **envp);
+char    *get_var(char *str, size_t i, t_shell *shell);
 void    check_var_quotes(char c, int *in_single_quote, int *in_double_quote);
-void    put_env_str(char **str, char **envp);
-void    put_env_arg(char **argv, char **envp);
+void    put_env_str(char **str, t_shell *shell);
+void    put_env_arg(char **argv, t_shell *shell);
 void ft_setenv(const char *key, const char *value, char ***envp);
 
 //print_banner
@@ -116,8 +116,8 @@ void ft_free_split(char **split);
 
 //built-ins
 void builtin_pwd(t_cmd *cmd);
-void builtin_export(t_cmd *cmd, char ***envp);
-void    builtin_cd(t_cmd *cmd, char ***envp);
+void builtin_export(t_cmd *cmd, t_shell *shell);
+void    builtin_cd(t_cmd *cmd, t_shell *shell);
 void builtin_unset(t_cmd *cmd, char ***envp);
 void builtin_env(char ***envp);
 
