@@ -15,3 +15,6 @@ int	main(int argc, char **argv, char **envp)
 	print_banner_end();
 	return (0);
 }
+
+
+//valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=readline.supp ./minishell
