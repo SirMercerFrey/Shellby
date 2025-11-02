@@ -6,14 +6,14 @@ char	*extract_var(char *str)
 	size_t	i;
 	char	*var;
 
-	if (*str == '?')
+	len = 1;
+	if (str[len] == '?')
 	{
 		var = (char *)(malloc(sizeof(char) * 2));
 		var[0] = '?';
 		var[1] = '\0';
 		return (var);
 	}
-	len = 1;
 	while (str[len] && ft_isalnum(str[len]))
 		++len;
 	--len;
