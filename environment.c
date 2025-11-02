@@ -1,70 +1,5 @@
 #include "minishell.h"
 
-/*static char	*ft_strdup(const char *s)
-{
-	char	*dup;
-	int		len;
-	int		i;
-
-	len = 0;
-	while (s[len])
-		++len;
-	dup = (char *)(malloc(sizeof(char) * (len + 1)));
-	if (!dup)
-		return (NULL);
-	i = 0;
-	while (i <= len)
-	{
-		dup[i] = s[i];
-		++i;
-	}
-	return (dup);
-}*/
-
-
-// static int	ft_isdigit(int c)
-// {
-// 	return (c >= '0' && c <= '9');
-// }
-
-// static int	ft_isalpha(int c)
-// {
-// 	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
-// }
-
-// static int	ft_isalnum(int c)
-// {
-// 	return (ft_isalpha(c) || ft_isdigit(c));
-// }
-
-// static size_t	ft_strlen(char *str)
-// {
-// 	char	*end;
-
-// 	if (!str)
-// 		return (0);
-// 	end = str;
-// 	while (*end)
-// 		++end;
-// 	return (end - str);
-// }
-
-// static int	ft_strncmp(char *s1, char *s2, size_t n)
-// {
-// 	size_t	i;
-
-// 	i = 0;
-// 	while (n > i)
-// 	{
-// 		if ((unsigned char)s1[i] != (unsigned char)s2[i])
-// 			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-// 		if (!s1[i])
-// 			break ;
-// 		++i;
-// 	}
-// 	return (0);
-// }
-
 char	*extract_var(char *str)
 {
 	size_t	len;
@@ -190,7 +125,7 @@ void	put_env_arg(char **argv, char **envp)
 	}
 }
 
-void ft_setenv(const char *key, const char *value, char ***envp)
+/*void ft_setenv(const char *key, const char *value, char ***envp)
 {
     size_t i = 0;
     size_t j;
@@ -238,33 +173,4 @@ void ft_setenv(const char *key, const char *value, char ***envp)
 	
     *envp = new_env;
     // free(*new_env);
-}
-
-
-/*int		main(void)
-{
-	char	**argv ;
-	char	str2[] = "\"Hello $USER, you 're now at $PWD on the $HOSTNAME machine.\"";
-	char	str[] = "echo";
-	char	str1[] = "-n";
-	size_t	i;
-
-	argv = (char **)(malloc(sizeof(char *) * 4));
-	
-	argv[0] = ft_strdup(str);
-	argv[1] = ft_strdup(str1);
-	argv[2] = ft_strdup(str2);
-	argv[3] = NULL;
-	i = 0;
-	while (argv[i])
-		printf("%s\n", argv[i++]);
-	put_env_arg(argv);
-	i = 0;
-	while (argv[i])
-		printf("%s\n", argv[i++]);
-	i = 0;
-	while (argv[i])
-		free(argv[i++]);
-	free(argv);
-	return (0);
 }*/

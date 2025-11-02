@@ -1,80 +1,5 @@
 #include "minishell.h"
 
-t_rdr	*create_redir(void)
-{
-	t_rdr	*new_redir;
-
-	new_redir = (t_rdr *)(malloc(sizeof(t_rdr)));
-	if (!new_redir)
-		return (NULL);
-	new_redir->type = 42;
-	new_redir->filename = NULL;
-	new_redir->next = NULL;
-	return (new_redir);
-}
-	
-t_cmd	*create_node(void)
-{
-	t_cmd	*new_node;
-
-	new_node = (t_cmd *)(malloc(sizeof(t_cmd)));
-	if (!new_node)
-		return (NULL);
-	new_node->argv = NULL;
-	new_node->cmd_path = NULL;
-	new_node->redirs = NULL;
-	new_node->next = NULL;
-	return (new_node);
-}
-
-t_cap	*create_head(void)
-{
-	t_cap	*new_head;
-
-	new_head = (t_cap *)(malloc(sizeof(t_cap)));
-	if (!new_head)
-		return (NULL);
-	new_head->tok = 0;
-	new_head->next = NULL;
-	return (new_head);
-}
-
-// static char	*ft_strdup(const char *s)
-// {
-// 	char	*dup;
-// 	int		len;
-// 	int		i;
-
-// 	len = 0;
-// 	while (s[len])
-// 		++len;
-// 	dup = (char *)(malloc(sizeof(char) * (len + 1)));
-// 	if (!dup)
-// 		return (NULL);
-// 	i = 0;
-// 	while (i <= len)
-// 	{
-// 		dup[i] = s[i];
-// 		++i;
-// 	}
-// 	return (dup);
-// }
-
-static int	is_redir(char *str)
-{
-	if (!str)
-		return (0);
-	if (!ft_strcmp(str, "<"))
-		return (1);
-	if (!ft_strcmp(str, ">"))
-		return (1);
-	if (!ft_strcmp(str, "<<"))
-		return (1);
-	if (!ft_strcmp(str, ">>"))
-		return (1);
-	return (0);
-}
-
 void	add_arg(char ***argv, char *word)
 {
 	size_t	count;
@@ -135,7 +60,7 @@ void	parsing_loop(char **token, t_cmd *node, int *n)
 			node->next = new;
 			node = new;
 		}
-		else if (is_redir(token[*n])) 
+		else if (are_redir(token[*n])) 
 			handle_direction(token, node, n);
 		else
 			add_arg(&node->argv, token[*n]);
@@ -165,71 +90,3 @@ t_cap *parsing(char **token)
 	head->tok = nbr_tok;
 	return (head);
 }
-
-void	free_redirs(t_rdr *tmp)
-{
-	t_rdr	*prev;
-
-	while (tmp)
-	{
-		free(tmp->filename);
-		prev = tmp;
-		tmp = tmp->next;
-		free(prev);
-	}
-}
-
-void	free_head_nodes(t_cap *head)
-{
-	t_cmd	*current;
-	t_cmd	*previous;
-	t_rdr	*tmp;
-	size_t	i;
-
-	current = head->next;
-	while (current)
-	{
-		i = 0;
-		while (current->argv[i])
-			free(current->argv[i++]);
-		free(current->argv);
-		free(current->cmd_path);
-		tmp = current->redirs;
-		free_redirs(tmp);
-		previous = current;
-		current = current->next;
-		free(previous);
-	}
-	free(head);
-}
-	
-		
-
-/*int		main(void)
-{
-//	char	*token[] = {"echo", "-n", "\"Je suis\"", "une legende", ">>", "file.txt", NULL};
-	char	*token[] = {"ls", "-A", "|", "grep", "'user'", NULL};
-	t_cap	*head;
-	t_cmd	*current;
-	size_t i = 0;
-	while (token[i])
-	{
-		printf("%s\n", token[i]);
-		++i;
-	}
-	head = parsing(token);
-	current = head->next;
-	printf("Nbre cmd = %d\n\n", head->tok);
-	while (current)
-	{
-		size_t	j = 0;
-		while (current->argv[j])
-			printf("argv = %s\n", current->argv[j++]);
-		printf("infile = %s\n", current->infile);
-		printf("outfile = %s\n", current->outfile);
-		printf("append = %d and heredoc = %d\n\n", current->append, current->heredoc);
-		current = current->next;
-	}
-	free_head_nodes(head);
-	return (0);
-}*/

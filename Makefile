@@ -7,7 +7,18 @@ LDFLAGS = -lreadline
 
 INCLUDES = -Ilibft
 
-SRC = minishell.c checking.c environment.c lexing.c main.c parsing.c print_banner.c path_check.c built-ins.c
+SRC =	main.c \
+		prodrome.c \
+		print_banner.c \
+		core.c \
+		lexing.c \
+		chars_check.c \
+		checking.c \
+		parsing.c \
+		parsing_utils.c \
+		quotes.c \
+		environment.c \
+		libft_utils.c
 OBJ = $(SRC:.c=.o)
 
 LIBFT_DIR = libft

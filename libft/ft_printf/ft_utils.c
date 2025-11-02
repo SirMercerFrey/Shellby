@@ -57,7 +57,7 @@ void	ft_putnbr(int nb, int *len)
 
 void	ft_putnbr_unsigned(unsigned int nb, int *len)
 {
-	if (nb >= 0 && nb <= 9)
+	if (nb <= 9)
 	{
 		ft_putchar(nb + '0', len);
 	}

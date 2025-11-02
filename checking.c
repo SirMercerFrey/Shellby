@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-int     ft_strcmp(char *s1, char *s2)
-{
-	while (*s1 && (*s1 == *s2))
-	{
-		++s1;
-		++s2;
-	}
-	return ((unsigned char)*s1 - (unsigned char)*s2);
-}
-
 int		check_pipes(char **token)
 {
 	size_t	i;
@@ -26,11 +16,6 @@ int		check_pipes(char **token)
 	if (!ft_strcmp(token[i], "|"))
 		return (0);
 	return (1);
-}
-
-static int		is_redir(char c)
-{
-	return (c == '>' || c == '<');
 }
 
 int		check_redirections(char **token)
@@ -86,18 +71,6 @@ int		all_checks(char **token)
 	return (1);
 }
 
-// static size_t	ft_strlen(char *str)
-// {
-// 	char	*end;
-
-// 	if (!str)
-// 		return (0);
-// 	end = str;
-// 	while (*end)
-// 		++end;
-// 	return (end - str);
-// }
-
 void	exit_syntax(char **token)
 {
 	int		i;
@@ -111,95 +84,3 @@ void	exit_syntax(char **token)
 	while (token[++i]);
 	free_tokens(token, i - 1);
 }
-
-void	remove_outer_quotes_inplace(char *str)
-{
-	int		in_single_quote;
-	int		in_double_quote;
-	size_t	read;
-	size_t	write;
-
-	in_single_quote = 0;
-	in_double_quote = 0;
-	read = 0;
-	write = 0;
-	while (str[read])
-	{
-		if (str[read] == '\'' && in_double_quote == 0)	
-		{
-			in_single_quote = !in_single_quote;
-			++read;
-		}
-		else if (str[read] == '"' && in_single_quote == 0)
-		{
-			in_double_quote = !in_double_quote;
-			++read;
-		}
-		else
-			str[write++] = str[read++];
-	}
-	str[write] = '\0';
-}
-
-void	remove_quotes(char **argv)
-{
-	size_t	i;
-
-	i = 0;
-	while (argv[i])
-	{
-		remove_outer_quotes_inplace(argv[i]);
-		++i;
-	}
-}
-
-/*static char	*ft_strdup(const char *s)
-{
-	char	*dup;
-	int		len;
-	int		i;
-
-	len = 0;
-	while (s[len])
-		++len;
-	dup = (char *)(malloc(sizeof(char) * (len + 1)));
-	if (!dup)
-		return (NULL);
-	i = 0;
-	while (i <= len)
-	{
-		dup[i] = s[i];
-		++i;
-	}
-	return (dup);
-}*/
-
-
-/*int		main(void)
-{
-	const char	*orig[] = {"\"echo\"", "ab\"cd\"'ef'", 'Je suis une ''*'\"", "'>'", "\"outfile.txt\"", NULL};
-	char	*token[10];
-
-	size_t	i = 0;
-	while (orig[i])
-	{
-		token[i] = ft_strdup(orig[i]);
-		++i;
-	}
-	token[i] = NULL;
-	i = 0;
-	while (token[i])
-		printf("%s\n", token[i++]);
-	if (all_checks(token))
-	{
-		remove_quotes(token);
-		i = 0;
-		while (token[i])
-			printf("%s ", token[i++]);
-		printf("\n");
-	}
-	i = 0;
-	while (token[i])
-	    free(token[i++]);	
-	return (0);
-}*/

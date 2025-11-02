@@ -1,5 +1,4 @@
 #include "minishell.h"
-#include <stdio.h>
 
 void	print_banner_start(void)
 {
@@ -20,11 +19,3 @@ void	print_banner_end(void)
 	printf("\t\t\t\t\t\t╚══════════════════════════════════════════╝\n");
 	printf("\033[0m"); 
 }
-
-
-/*int	main(void)
-{
-	print_banner_start();
-	print_banner_end();
-	return (0);
-}*/

@@ -1,22 +1,5 @@
 #include "minishell.h"
-
 #define TOK_MAX 128
-
-static int		metachars(char c)
-{
-	return (c == '|' || c == '<' || c == '>');
-}
-
-static int		quotes(char c)
-{
-	return (c == '\'' || c == '"');
-}
-
-
-static int		spaces(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n');
-}
 
 size_t	get_len(char *line)
 {
@@ -95,23 +78,10 @@ char	**split_tokens(char *line)
 			free_tokens(token, i - 1);
 			return (NULL);
 		}
+		while (*line && spaces(*line))
+			++line;
 		++i;
 	}
 	token[i] = NULL;
 	return (token);
 }
-
-/*int		main(void)
-{
-	char	*line;
-	line = readline("Prompt >");
-	char **token;
-	char *origin = line;
-	token = split_tokens(line);
-	size_t i = 0;
-	while (token[i])
-		printf("%s\n", token[i++]);
-	free_tokens(token, i - 1);
-	free(origin);
-	return (0);
-}*/	
